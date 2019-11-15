@@ -22,10 +22,6 @@ def search(name: str) -> str:
         return data.group(1)
 
 
-def image_link(item_id: str) -> str:
-    return f"https://items.classicmaps.xyz/{item_id}.png"
-
-
 # Events
 
 @BOT.event
@@ -50,11 +46,7 @@ async def on_message(message):
     data = re.findall(r'\[(.*?)\]', message.content)
     if data is not None:
         for text in data:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(image_link(search(text))) as resp:
-                    if resp.status == 200:
-                        data = io.BytesIO(await resp.read())
-                        await message.channel.send(file=discord.File(data, 'image.png'))
+            await message.channel.send(file=discord.File(f'items/{search(text)}.png'))
 
 
 # Initialization of bot
