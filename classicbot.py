@@ -46,7 +46,8 @@ async def on_message(message):
     data = re.findall(r'\[(.*?)\]', message.content)
     if data is not None:
         for text in data:
-            await message.channel.send(file=discord.File(f'items/{search(text)}.png'))
+            item = search(text)
+            await message.channel.send(f'<https://classic.wowhead.com/item={item}>', file=discord.File(f'items/{item}.png'))
 
 
 # Initialization of bot
