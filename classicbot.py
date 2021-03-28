@@ -13,8 +13,8 @@ CFG = load_config('config.yaml')
 
 # Helpers
 
-def search(name: str) -> str:
-    result = requests.get(f'https://classic.wowhead.com/search?q={name}#items')
+def search(name: str, expansion: str="classic") -> str:
+    result = requests.get(f'https://{expansion}.wowhead.com/search?q={name}#items')
     data = re.search(r'/item=(\d*)', result.text)
     if data is None:
         print(f"Could not find item for \"{name}\"")
@@ -43,11 +43,19 @@ async def on_ready():
 @BOT.event
 async def on_message(message):
     """Handle on_message event"""
-    data = re.findall(r'\[(.*?)\]', message.content)
+    data = re.findall(r'\[(.*?)\](\((c|t)\))?', message.content)
     if data is not None:
         for text in data:
-            item = search(text)
-            await message.channel.send(f'<https://classic.wowhead.com/item={item}>', file=discord.File(f'items/{item}.png'))
+            searchterm, _, expansion = text
+            item = search(searchterm)
+            if item is None:
+                await message.channel.send(f'Could not find "{searchterm}"')
+                continue
+            expansion = "tbc" if expansion == "t" else "classic"
+            try:
+                await message.channel.send(f'<https://{expansion}.wowhead.com/item={item}>', file=discord.File(f'items/{expansion}/{item}.png'))
+            except FileNotFoundError:
+                await message.channel.send(f'Could not find image for "{item}" in {expansion}')
 
 
 # Initialization of bot
