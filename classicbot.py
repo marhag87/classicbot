@@ -47,7 +47,7 @@ async def on_message(message):
     if data is not None:
         for text in data:
             searchterm, _, expansion = text
-            item = search(searchterm)
+            item = search(searchterm, expansion)
             if item is None:
                 await message.channel.send(f'Could not find "{searchterm}"')
                 continue
