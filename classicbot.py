@@ -14,6 +14,8 @@ CFG = load_config('config.yaml')
 # Helpers
 
 def search(name: str, expansion: str="classic") -> str:
+    if expansion == '':
+        expansion = "classic"
     result = requests.get(f'https://{expansion}.wowhead.com/search?q={name}#items')
     data = re.search(r'/item=(\d*)', result.text)
     if data is None:
