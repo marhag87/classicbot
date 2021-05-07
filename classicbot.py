@@ -15,7 +15,7 @@ CFG = load_config('config.yaml')
 
 def search(name: str, expansion: str="classic") -> str:
     if expansion == '':
-        expansion = "classic"
+        expansion = "tbc"
     result = requests.get(f'https://{expansion}.wowhead.com/search?q={name}#items')
     data = re.search(r'/item=(\d*)', result.text)
     if data is None:
@@ -53,7 +53,7 @@ async def on_message(message):
             if item is None:
                 await message.channel.send(f'Could not find "{searchterm}"')
                 continue
-            expansion = "tbc" if expansion == "t" else "classic"
+            expansion = "classic" if expansion == "c" else "tbc"
             try:
                 await message.channel.send(f'<https://{expansion}.wowhead.com/item={item}>', file=discord.File(f'items/{expansion}/{item}.png'))
             except FileNotFoundError:
