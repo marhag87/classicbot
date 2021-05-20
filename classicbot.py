@@ -45,6 +45,10 @@ async def on_ready():
 @BOT.event
 async def on_message(message):
     """Handle on_message event"""
+    if "```" in message.content:
+        return
+    if "`" in message.content:
+        return
     data = re.findall(r'\[(.*?)\](\((c|t)\))?', message.content)
     if data is not None:
         for text in data:
